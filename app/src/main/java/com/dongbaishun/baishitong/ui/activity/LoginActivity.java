@@ -103,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 //                                    Looper.prepare();
                   if (isSucceed == 1) {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    LoginActivity.this.finish();
                     //Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                   } else {
                     //Toast.makeText(LoginActivity.this, "用户名或密码错误!", Toast.LENGTH_SHORT).show();

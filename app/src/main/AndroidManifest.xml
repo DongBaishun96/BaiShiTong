@@ -25,9 +25,6 @@
         </activity>
         <activity android:name=".ui.activity.LogUpActivity"/>
         <activity
-            android:name=".ui.activity.WholeMainPage"
-            android:theme="@style/Theme.DesignDemo"/>
-        <activity
             android:name=".ui.activity.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">

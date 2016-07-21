@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity
     setContentView(R.layout.activity_whole_main);
     //声明Toolbar
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    //toolbar标题的文字需在setSupportActionBar之前，不然会无效
     setSupportActionBar(toolbar);
 
     //浮动按钮 & Snackbar
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity
     //切换开关 toggle
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+    /*
+    以下两行顺序随意
+     */
     drawer.setDrawerListener(toggle);
     toggle.syncState();
     //抽屉内容填充 xml->menu
@@ -71,7 +75,6 @@ public class MainActivity extends AppCompatActivity
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.main, menu);
-    getMenuInflater().inflate(R.menu.options_menu, menu);
     //实例化你的searchable 传递给SearchView
     SearchManager searchManager =
             (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -95,6 +98,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     if (id == R.id.history) {
+      //Warning:(96, 5) 'if' statement can be replaced with 'return id == R.id.history || super.onOptionsItemSelected(item);'
       return true;
     }
 

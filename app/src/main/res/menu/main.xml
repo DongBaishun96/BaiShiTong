@@ -15,5 +15,11 @@
         android:icon="@mipmap/ic_launcher"
         android:orderInCategory="90"
         android:title="选择日期"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search"
+        android:title="search"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="collapseActionView|ifRoom"/>
 </menu>

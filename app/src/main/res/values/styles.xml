@@ -20,6 +20,6 @@
     <!--<style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>-->
     <style name="AppBarOverlay" parent="AppTheme"/>
 
-    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="PopupOverlay" parent="AppTheme"/>
 
 </resources>
