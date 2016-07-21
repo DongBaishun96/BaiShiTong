@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0"
+        android:background="@drawable/bg_login_edit"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_marginLeft="@dimen/login_edit_bg"
+            android:layout_marginRight="@dimen/login_edit_bg"
+            android:layout_weight="3"
+            android:background="@drawable/bg_log_in"
+            android:orientation="vertical"
+            android:paddingBottom="10px"
+            android:paddingTop="21px">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/login_edit_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:hint="输入帐号"
+                    android:paddingLeft="30sp"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/login_edit_pwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:hint="输入密码"
+                    android:paddingLeft="30sp"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2.2" />
+                <!-- 记住密码选项 -->
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.8"
+                    android:text="记住密码" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:paddingLeft="@dimen/login_edit_btn"
+            android:paddingRight="@dimen/login_edit_btn">
+            <!-- 登录按钮 -->
+            <Button
+                android:id="@+id/login_btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginRight="7px"
+                android:layout_marginTop="12px"
+                android:layout_weight="0.8"
+                android:text="登录" />
+        </LinearLayout>
+
+        <!-- 复选框层 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="3"></LinearLayout>
+        <!-- 底部 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/logup_user"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:text="@string/log_up_user" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

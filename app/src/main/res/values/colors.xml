@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="lightgray">#D3D3D3</color><!--亮灰色 -->
+    <color name="window_background">#FF54F5F5</color>
+</resources>
+
+    <!--
+    colorPrimary 对应标题栏，也就是toolbar的颜色
+    colorPrimaryDark 对应状态栏的颜色
+    colorAccent 对应一些控件，像输入框编辑，RadioButton选中、CheckBox等选中时的颜色。
+    -->
