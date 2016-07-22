@@ -6,7 +6,14 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.READ_PROFILE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    //获取网络权限
     <uses-permission android:name="android.permission.INTERNET"/>
+    //缓存机制
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    //修改头像 + 缓存
+    <uses-permission android:name="android.permission.CAMERA"/>
+    //内存卡写入数据
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <application
         android:allowBackup="true"
@@ -17,11 +24,7 @@
         <activity
             android:name=".ui.activity.LoginActivity"
             android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".ui.activity.LogUpActivity"/>
         <activity
@@ -33,6 +36,13 @@
                 android:resource="@xml/searchable"/>
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activity.ProfileActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
     </application>
