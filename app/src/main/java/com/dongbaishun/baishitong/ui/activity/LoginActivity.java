@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dongbaishun.baishitong.NetUrl.MyToken;
 import com.dongbaishun.baishitong.NetUrl.NetUrl;
 import com.dongbaishun.baishitong.R;
 import com.dongbaishun.baishitong.Util.MLog;
@@ -21,10 +22,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -87,28 +94,43 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
               final String res = response.body().string();
               int retCode = 0;
+              int retHasLogin = 0;
+              String retToken = "";
               MLog.iLog(TAG, res);
               try {
                 JSONObject jsonObject = new JSONObject(res);
                 retCode = jsonObject.getInt("success");
+                retHasLogin = jsonObject.getInt("hasLogin");
+                retToken = jsonObject.getString("token");
               } catch (JSONException e) {
                 e.printStackTrace();
               }
               MLog.iLog(TAG, "retCode:" + retCode);
 
               final int isSucceed = retCode;
+              final int isLogin = retHasLogin;
+              final String newToken = retToken;
               runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-//                                    Looper.prepare();
+//                  Looper.prepare();
                   if (isSucceed == 1) {
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    LoginActivity.this.finish();
-                    //Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                  } else {
+                    if (isLogin == 1) {
+                      //MLog.iLog(TAG, "您已登录");
+                    } else {
+
+                      startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                      //MyToken.setToken(newToken);
+                      LoginActivity.this.finish();
+                      //Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    }
+                  } else if (isSucceed == 0) {
+                    //MLog.iLog(TAG, "用户名密码不匹配！");
                     //Toast.makeText(LoginActivity.this, "用户名或密码错误!", Toast.LENGTH_SHORT).show();
+                  } else {
+                    MLog.iLog(TAG, "error");
                   }
-//                                    Looper.loop();
+   //               Looper.loop();
                 }
               });
             }

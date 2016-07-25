@@ -1,6 +1,8 @@
 package com.dongbaishun.baishitong.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,9 +18,13 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SearchView;
 
 import com.dongbaishun.baishitong.R;
 import com.dongbaishun.baishitong.Util.MLog;
@@ -45,11 +51,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_profile);
+    setContentView(R.layout.activity_whole_profile);
     initView();
   }
 
   private void initView() {
+
+    //声明Toolbar
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    //toolbar标题的文字需在setSupportActionBar之前，不然会无效
+    setSupportActionBar(toolbar);
+
     //初始化控件
     btnPhotos = (Button) findViewById(R.id.btn_photos);
     btnTakephoto = (Button) findViewById(R.id.btn_takephoto);
@@ -208,5 +220,30 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         e.printStackTrace();
       }
     }
+  }
+
+  /*
+  ToolBar 标题
+   */
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.menu_profile, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle action bar item clicks here. The action bar will
+    // automatically handle clicks on the Home/Up button, so long
+    // as you specify a parent activity in AndroidManifest.xml.
+    int id = item.getItemId();
+
+    //noinspection SimplifiableIfStatement
+    if (id == R.id.upload) {
+      return true;
+    }
+
+    return super.onOptionsItemSelected(item);
   }
 }
