@@ -197,12 +197,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
       return;
     }
     FileOutputStream b = null;
+    /*
+    判断文件夹是否存在，修改时间2016.07.26 8:49
+     */
     File file = new File(path);
-    boolean createStatu = file.mkdirs();// 创建文件夹
-    if (createStatu) {
-      MLog.iLog(TAG, "创建path文件夹成功");
-    } else {
-      MLog.iLog(TAG, "创建path文件夹失败");
+    if(!file.exists()) {
+      boolean createStatu = file.mkdirs();// 创建文件夹
+      if (createStatu) {
+        MLog.iLog(TAG, "创建path文件夹成功");
+      } else {
+        MLog.iLog(TAG, "创建path文件夹失败");
+      }
     }
     String fileName = path + "head.jpg";//图片名字
     try {
@@ -241,9 +246,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     //noinspection SimplifiableIfStatement
     if (id == R.id.upload) {
+      startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+      ProfileActivity.this.finish();
       return true;
     }
-
     return super.onOptionsItemSelected(item);
   }
 }

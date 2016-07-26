@@ -1,18 +1,18 @@
 package com.dongbaishun.baishitong.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Looper;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.dongbaishun.baishitong.NetUrl.MyToken;
 import com.dongbaishun.baishitong.NetUrl.NetUrl;
 import com.dongbaishun.baishitong.R;
 import com.dongbaishun.baishitong.Util.MLog;
@@ -22,16 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
 import okhttp3.FormBody;
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -54,10 +48,10 @@ public class LoginActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
-
+    MLog.iLog("debugggg", "结束加载布局");
     bt_login = (Button) findViewById(R.id.login_btn_login);
     bt_logup = (TextView) findViewById(R.id.logup_user);
-
+    MLog.iLog("debugggg", "button和textview无错误");
     bt_login.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -66,12 +60,12 @@ public class LoginActivity extends AppCompatActivity {
         username = userEdit.getText().toString();
         password = pawdEdit.getText().toString();
         MLog.iLog(TAG, "onClick");
+        MLog.iLog("debugggg", "onClick 登录.");
         if (username.equals("") || password.equals("")) {
           MyToast.SToast(LoginActivity.this, "输入不能为空");
         } else {
           MLog.iLog(TAG, "username:" + username);
           MLog.iLog(TAG, "password:" + password);
-
 
           FormBody body = new FormBody.Builder()
                   .add("username", username)
@@ -116,9 +110,25 @@ public class LoginActivity extends AppCompatActivity {
 //                  Looper.prepare();
                   if (isSucceed == 1) {
                     if (isLogin == 1) {
-                      //MLog.iLog(TAG, "您已登录");
+                      new AlertDialog.Builder(LoginActivity.this).setTitle("系统提示")//设置对话框标题
+                              .setMessage("您已登录！")//设置显示的内容
+                              .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加确定按钮
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
+                                  //finish();
+                                  startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                  LoginActivity.this.finish();
+                                }
+                              })
+                              .setNegativeButton("返回",
+                                      new DialogInterface.OnClickListener() {//添加返回按钮
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {//响应事件
+                                          Log.i("alertdialog", " 请重新输入账号密码！");
+                                        }
+                                      })
+                              .show();//在按键响应事件中显示此对话框
                     } else {
-
                       startActivity(new Intent(LoginActivity.this, MainActivity.class));
                       //MyToken.setToken(newToken);
                       LoginActivity.this.finish();
@@ -130,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                   } else {
                     MLog.iLog(TAG, "error");
                   }
-   //               Looper.loop();
+                  //               Looper.loop();
                 }
               });
             }

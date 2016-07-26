@@ -12,14 +12,20 @@
         app:showAsAction="never"/>
     <item
         android:id="@+id/calendar"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/menu_alarm"
         android:orderInCategory="90"
         android:title="选择日期"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/search"
-        android:icon="@drawable/ic_search"
+        android:icon="@mipmap/menu_search"
         android:title="search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom"/>
 </menu>
+
+<!--
+此处图标不能用drawable里面的！！！！
+不要问我为什么，我也不知道，Android4.4报错R文件找不到该drawable地址
+Android6.0照样跑，真是日了N+1条狗了！！！
+-->
