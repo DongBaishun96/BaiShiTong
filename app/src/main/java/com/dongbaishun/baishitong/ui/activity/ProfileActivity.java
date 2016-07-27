@@ -201,7 +201,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     判断文件夹是否存在，修改时间2016.07.26 8:49
      */
     File file = new File(path);
-    if(!file.exists()) {
+    if (!file.exists()) {
       boolean createStatu = file.mkdirs();// 创建文件夹
       if (createStatu) {
         MLog.iLog(TAG, "创建path文件夹成功");

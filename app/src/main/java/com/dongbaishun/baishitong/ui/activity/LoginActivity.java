@@ -2,6 +2,7 @@ package com.dongbaishun.baishitong.ui.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -43,29 +45,68 @@ public class LoginActivity extends AppCompatActivity {
   private TextView bt_logup;
 
   OkHttpClient client = new OkHttpClient();
+  boolean isFirstIn = true;
+  private CheckBox rememberPass;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
-    MLog.iLog("debugggg", "结束加载布局");
+    /*
+    SharedPreferences存储功能
+     */
+    //MODE_PRIVATE 默认传入效果，相当于传入 0
+    SharedPreferences pref = this.getSharedPreferences("myLoginInfo", MODE_PRIVATE);
+    //取得相应的值，如果没有该值，说明还未写入，用第二个参数true作为默认值?!
+    isFirstIn = pref.getBoolean("isFirstIn", true);
+    MLog.iLog("SharedPreferences", "" + isFirstIn);
+    final SharedPreferences.Editor editor = pref.edit();
+    editor.putBoolean("isFirstIn", false);
+    editor.commit();
+    //MLog.iLog("SharedPreferences2", "" + pref.getBoolean("isFirstIn", false));
+    if (isFirstIn == false) {
+      startActivity(new Intent(this, MainActivity.class));
+      //切换动画
+      //overridePendingTransition(R.anim.fade, R.anim.hold);
+    }
+
     bt_login = (Button) findViewById(R.id.login_btn_login);
     bt_logup = (TextView) findViewById(R.id.logup_user);
-    MLog.iLog("debugggg", "button和textview无错误");
+    rememberPass = (CheckBox) findViewById(R.id.remember_pass);
+    userEdit = (EditText) findViewById(R.id.login_edit_account);
+    pawdEdit = (EditText) findViewById(R.id.login_edit_pwd);
+
+    boolean isRemember = pref.getBoolean("remember_pass", false);
+    if (isRemember) {
+      //显示保存的账号密码
+      String xmlAccount = pref.getString("account", "");
+      String xmlPassword = pref.getString("password", "");
+      userEdit.setText(xmlAccount);
+      pawdEdit.setText(xmlPassword);
+      rememberPass.setChecked(true);
+    }
+
     bt_login.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        userEdit = (EditText) findViewById(R.id.login_edit_account);
-        pawdEdit = (EditText) findViewById(R.id.login_edit_pwd);
+        MLog.iLog(TAG, "onClick");
         username = userEdit.getText().toString();
         password = pawdEdit.getText().toString();
-        MLog.iLog(TAG, "onClick");
-        MLog.iLog("debugggg", "onClick 登录.");
         if (username.equals("") || password.equals("")) {
           MyToast.SToast(LoginActivity.this, "输入不能为空");
         } else {
           MLog.iLog(TAG, "username:" + username);
           MLog.iLog(TAG, "password:" + password);
+          if (rememberPass.isChecked()) {
+            editor.putBoolean("remember_pass", true);
+            editor.putString("account", username);
+            editor.putString("password", password);
+          } else {
+            editor.remove("remember_pass");
+            editor.remove("account");
+            editor.remove("password");
+          }
+          editor.commit();
 
           FormBody body = new FormBody.Builder()
                   .add("username", username)
