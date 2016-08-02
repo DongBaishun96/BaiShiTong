@@ -23,9 +23,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
 
+import com.dongbaishun.baishitong.NetUrl.NetState;
 import com.dongbaishun.baishitong.R;
 import com.dongbaishun.baishitong.Util.MLog;
-import com.dongbaishun.baishitong.ui.fragment.FirstFragment;
+import com.dongbaishun.baishitong.Util.MyToast;
+import com.dongbaishun.baishitong.ui.fragment.EduFragment;
+import com.dongbaishun.baishitong.ui.fragment.LoginFragment;
+import com.dongbaishun.baishitong.ui.fragment.OnlineFragment;
+import com.dongbaishun.baishitong.ui.fragment.RefreshNetworkFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     //toolbar标题的文字需在setSupportActionBar之前，不然会无效
     setSupportActionBar(toolbar);
     MLog.iLog("debugggg", "结束toolbar声明");
+    MyToast.SToast(MainActivity.this, "登录成功");
     //浮动按钮 & Snackbar
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
@@ -135,9 +141,17 @@ public class MainActivity extends AppCompatActivity
       startActivity(intent);
       // Handle the camera action
     } else if (id == R.id.nav_gallery) {
-
+      fragment = new EduFragment();
+      ft.replace(R.id.container, fragment);
+      ft.commit();
     } else if (id == R.id.nav_slideshow) {
-      fragment = new FirstFragment();
+      if (NetState.Network_login_state == 0) {
+        fragment = new LoginFragment();
+      } else if (NetState.Network_login_state == 1 && NetState.Network_online_state == 1) {
+        fragment = new OnlineFragment();
+      } else {
+        fragment = new RefreshNetworkFragment();
+      }
       ft.replace(R.id.container, fragment);
       ft.commit();
     } else if (id == R.id.nav_manage) {
@@ -158,7 +172,7 @@ public class MainActivity extends AppCompatActivity
 
     DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     drawer.closeDrawer(GravityCompat.START);
-//    MLog.iLog("debugggg", "onNavigationItem无错");
+//    MLog.iLog("debugggg", "onNavigationItem无错");aza
     return true;
   }
 }

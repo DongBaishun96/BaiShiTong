@@ -3,6 +3,9 @@ package com.dongbaishun.baishitong.ui.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
@@ -14,7 +17,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.dongbaishun.baishitong.NetUrl.NetState;
 import com.dongbaishun.baishitong.NetUrl.NetUrl;
 import com.dongbaishun.baishitong.R;
 import com.dongbaishun.baishitong.Util.MLog;
@@ -43,6 +48,11 @@ public class LoginActivity extends AppCompatActivity {
   private String username;
   private String password;
   private TextView bt_logup;
+  private int ToastState = -2;
+
+  SharedPreferences pref;
+
+  private Handler mainhandler;
 
   OkHttpClient client = new OkHttpClient();
   boolean isFirstIn = true;
@@ -56,18 +66,12 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences存储功能
      */
     //MODE_PRIVATE 默认传入效果，相当于传入 0
-    SharedPreferences pref = this.getSharedPreferences("myLoginInfo", MODE_PRIVATE);
+    pref = this.getSharedPreferences("myLoginInfo", MODE_PRIVATE);
     //取得相应的值，如果没有该值，说明还未写入，用第二个参数true作为默认值?!
     isFirstIn = pref.getBoolean("isFirstIn", true);
     MLog.iLog("SharedPreferences", "" + isFirstIn);
-    final SharedPreferences.Editor editor = pref.edit();
-    editor.putBoolean("isFirstIn", false);
-    editor.commit();
-    //MLog.iLog("SharedPreferences2", "" + pref.getBoolean("isFirstIn", false));
-    if (isFirstIn == false) {
+    if (!isFirstIn) {
       startActivity(new Intent(this, MainActivity.class));
-      //切换动画
-      //overridePendingTransition(R.anim.fade, R.anim.hold);
     }
 
     bt_login = (Button) findViewById(R.id.login_btn_login);
@@ -76,6 +80,9 @@ public class LoginActivity extends AppCompatActivity {
     userEdit = (EditText) findViewById(R.id.login_edit_account);
     pawdEdit = (EditText) findViewById(R.id.login_edit_pwd);
 
+    /*
+    记住密码
+     */
     boolean isRemember = pref.getBoolean("remember_pass", false);
     if (isRemember) {
       //显示保存的账号密码
@@ -95,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         if (username.equals("") || password.equals("")) {
           MyToast.SToast(LoginActivity.this, "输入不能为空");
         } else {
+          SharedPreferences.Editor editor = pref.edit();
           MLog.iLog(TAG, "username:" + username);
           MLog.iLog(TAG, "password:" + password);
           if (rememberPass.isChecked()) {
@@ -106,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.remove("account");
             editor.remove("password");
           }
-          editor.commit();
+          editor.apply();
 
           FormBody body = new FormBody.Builder()
                   .add("username", username)
@@ -129,34 +137,33 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
               final String res = response.body().string();
               int retCode = 0;
-              int retHasLogin = 0;
-              String retToken = "";
+              int retHasLoginOnOtherDevice = 0;
               MLog.iLog(TAG, res);
               try {
                 JSONObject jsonObject = new JSONObject(res);
                 retCode = jsonObject.getInt("success");
-                retHasLogin = jsonObject.getInt("hasLogin");
-                retToken = jsonObject.getString("token");
+                retHasLoginOnOtherDevice = jsonObject.getInt("hasLogin");
               } catch (JSONException e) {
                 e.printStackTrace();
               }
               MLog.iLog(TAG, "retCode:" + retCode);
+              MLog.iLog(TAG, "retHasLogin:" + retHasLoginOnOtherDevice);
 
               final int isSucceed = retCode;
-              final int isLogin = retHasLogin;
-              final String newToken = retToken;
+              final int isLoginOnOtherDevice = retHasLoginOnOtherDevice;
+
               runOnUiThread(new Runnable() {
+                //new Thread(new Runnable() {
                 @Override
                 public void run() {
-//                  Looper.prepare();
+                  Message msg = new Message();
                   if (isSucceed == 1) {
-                    if (isLogin == 1) {
-                      new AlertDialog.Builder(LoginActivity.this).setTitle("系统提示")//设置对话框标题
-                              .setMessage("您已登录！")//设置显示的内容
+                    if (isLoginOnOtherDevice == 1) {
+                      new AlertDialog.Builder(LoginActivity.this).setTitle("友情提示")//设置对话框标题
+                              .setMessage("您已在其他地点登录！")//设置显示的内容
                               .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加确定按钮
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {//确定按钮的响应事件
-                                  //finish();
                                   startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                   LoginActivity.this.finish();
                                 }
@@ -170,18 +177,23 @@ public class LoginActivity extends AppCompatActivity {
                                       })
                               .show();//在按键响应事件中显示此对话框
                     } else {
-                      startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                      //MyToken.setToken(newToken);
-                      LoginActivity.this.finish();
-                      //Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                      msg.obj = "登录成功";
+                      msg.what = 1; //登录成功
+                      mainhandler.sendMessage(msg);
                     }
                   } else if (isSucceed == 0) {
-                    //MLog.iLog(TAG, "用户名密码不匹配！");
-                    //Toast.makeText(LoginActivity.this, "用户名或密码错误!", Toast.LENGTH_SHORT).show();
+                    //Message msg = new Message();
+                    msg.obj = "用户名密码不匹配！";
+                    msg.what = 0; //登录失败
+                    mainhandler.sendMessage(msg);
+                    MLog.iLog(TAG, "用户名密码不匹配！");
                   } else {
-                    MLog.iLog(TAG, "error");
+                    //Message msg = new Message();
+                    msg.obj = "系统错误";
+                    msg.what = -1; //系统错误
+                    mainhandler.sendMessage(msg);
+                    MLog.iLog(TAG, "system error");
                   }
-                  //               Looper.loop();
                 }
               });
             }
@@ -203,6 +215,25 @@ public class LoginActivity extends AppCompatActivity {
       }
     });
 
+    mainhandler = new Handler() {
+      public void handleMessage(android.os.Message msg) {
+        switch (msg.what) {
+          case 1:
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFirstIn", false);
+            editor.apply();
+            MyToast.SToast(LoginActivity.this, "登录成功");
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            LoginActivity.this.finish();
+            break;
+          case 2:
+          case 3:
+            MyToast.SToast(LoginActivity.this, msg.obj.toString());
+            break;
+          default:
+            MyToast.SToast(LoginActivity.this, "系统故障");
+        }
+      }
+    };
   }
 }
-
